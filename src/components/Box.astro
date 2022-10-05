@@ -1,0 +1,22 @@
+---
+export interface Props {
+  src: string;
+  alt: string;
+  href: string;
+}
+
+const { href, src, alt } = Astro.props;
+---
+
+<li
+  class="shadow-md rounded-2xl border-2 border-slate-300/40 transform transition-all hover:translate-y-2"
+>
+  <a href={href}>
+    <img
+      src={src}
+      alt={alt}
+      class="object-cover w-full h-full rounded-md"
+      style={{ aspectRatio: " 16 / 9" }}
+    />
+  </a>
+</li>

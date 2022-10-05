@@ -1,0 +1,36 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Box from "../components/Box.astro";
+
+const items = [
+  {
+    alt: "Calcultor app",
+    image: "/calc.webp",
+    href: "./app/calculator",
+  },
+  {
+    alt: "Countdown app",
+    image: "/count.webp",
+    href: "./app/countdown",
+  },
+];
+---
+
+<Layout title="rickraz - mini-app">
+  <main>
+    <h1
+      class="font-bold font-poppins flex justify-center text-2xl pt-12 text-black"
+    >
+      Mini App Collections
+    </h1>
+    <ul
+      class="grid sm:grid-cols-2 xl:grid-cols-3 gap-10 md:gap-14 xl:gap-16 px-10 md:px-32 pt-12"
+    >
+      {
+        items.map((item) => (
+          <Box alt={item.alt} src={item.image} href={item.href} />
+        ))
+      }
+    </ul>
+  </main>
+</Layout>

@@ -1,0 +1,307 @@
+---
+---
+
+<div class="calculator-grid shadow-md">
+  <div class="output">
+    <div data-previous-operand class="previous-operand"></div>
+    <div data-current-operand class="current-operand"></div>
+  </div>
+  <button data-all-clear class="delete">AC</button>
+  <button data-operation class="operation">±</button>
+  <button data-operation class="operation">%</button>
+  <button data-operation class="operation">÷</button>
+  <button data-number class="number" class="">7</button>
+  <button data-number class="number">8</button>
+  <button data-number class="number">9</button>
+  <button data-operation class="operation">*</button>
+  <button data-number class="number">4</button>
+  <button data-number class="number">5</button>
+  <button data-number class="number">6</button>
+  <button data-operation class="operation">-</button>
+  <button data-number class="number">1</button>
+  <button data-number class="number">2</button>
+  <button data-number class="number">3</button>
+  <button data-operation class="operation">+</button>
+  <button data-number class="number">0</button>
+  <button data-number class="number">.</button>
+  <button data-delete class="backspace">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-6 h-6"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 9.75L14.25 12m0 0l2.25 2.25M14.25 12l2.25-2.25M14.25 12L12 14.25m-2.58 4.92l-6.375-6.375a1.125 1.125 0 010-1.59L9.42 4.83c.211-.211.498-.33.796-.33H19.5a2.25 2.25 0 012.25 2.25v10.5a2.25 2.25 0 01-2.25 2.25h-9.284c-.298 0-.585-.119-.796-.33z"
+      ></path>
+    </svg>
+  </button>
+  <button data-equals class="samaDengan">=</button>
+</div>
+
+<style>
+  .calculator-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 75px);
+    grid-template-rows: minmax(75px, auto) repeat(5, 75px);
+    padding-top: 50px;
+  }
+
+  .output {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 1rem;
+    word-wrap: break-word;
+    word-break: break-all;
+    background-color: #5776e0;
+    color: #eff6ff;
+    min-height: 110px;
+  }
+
+  button {
+    border: none;
+  }
+
+  .previous-operand {
+    font-size: 1.2rem;
+  }
+
+  .current-operand {
+    font-size: 2.1rem;
+  }
+
+  .delete {
+    color: #4b63b8;
+    background-color: #fad4cf;
+    font-size: 1.2rem;
+  }
+
+  .delete:hover {
+    background-color: #fdbbb2;
+  }
+
+  .number {
+    color: #181a1f;
+    background-color: #f6f8ff;
+    font-size: 1.2rem;
+  }
+
+  .number:hover {
+    background-color: #e2e9ff;
+  }
+
+  .operation {
+    color: #7a92e6;
+    background-color: #e7ecfd;
+    font-size: 1.7rem;
+  }
+
+  .operation:hover {
+    background-color: #cad6ff;
+  }
+
+  .backspace {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #7a92e6;
+    background-color: #f6f8ff;
+  }
+
+  .backspace:hover {
+    background-color: #e2e9ff;
+  }
+
+  .samaDengan {
+    color: #7a92e6;
+    background-color: #cfd9fa;
+    font-size: 1.7rem;
+  }
+
+  .samaDengan:hover {
+    color: #f0f3ff;
+    background-color: #8ea0de;
+  }
+</style>
+
+<script>
+  //-- Object Oriented Programming Approches
+
+  // Function as Class
+
+  class Calculator {
+    previousOperandTextElement: HTMLElement | null;
+    currentOperandTextElement: HTMLElement | null;
+    currentOperand: string;
+    previousOperand: string;
+    Operation: undefined;
+
+    constructor(previousOperandTextElement, currentOperandTextElement) {
+      this.currentOperandTextElement = currentOperandTextElement;
+      this.previousOperandTextElement = previousOperandTextElement;
+      // --- DIBUAT DULU---------------------------------
+      this.clear();
+    }
+
+    clear() {
+      this.currentOperand = "";
+      this.previousOperand = "";
+      this.Operation;
+    }
+
+    appendNumber(number) {
+      if (number === "." && this.currentOperand.includes(".")) return;
+      //untuk meniadakan double "." = titik
+      this.currentOperand = this.currentOperand.toString() + number.toString();
+      // di convert ke string karena javascript akan menambah angka bukan 1 + 1 = 2 tetapi 1 + 1 = 11
+      //kita ingin bertambah (appended) bukan menghasilkan penjumlahan (added)
+    }
+
+    backspace() {
+      this.currentOperand = this.currentOperand.toString().slice(0, -1);
+    }
+
+    chooseOperation(operation) {
+      if (this.currentOperand === "") return;
+      // jika kosong maka tanda tidak bisa dipilih
+      if (this.currentOperand !== "") {
+        // --- DIBUAT DULU---------------------------------
+        this.compute();
+      }
+      //   jika sudah ada maka >> compute antar currentOperand dengan previusOperand
+      this.Operation = operation;
+      this.previousOperand = this.currentOperand;
+      this.currentOperand = "";
+    }
+
+    compute() {
+      let computation: any;
+      const prev = parseFloat(this.previousOperand);
+      const current = parseFloat(this.currentOperand);
+
+      //   jika bukan sebuah nomer maka kosong
+      if (isNaN(prev) || isNaN(current)) return;
+
+      switch (this.Operation) {
+        case "+":
+          computation = prev + current;
+          break;
+        case "-":
+          computation = prev - current;
+          break;
+        case "*":
+          computation = prev * current;
+          break;
+        case "÷":
+          computation = prev / current;
+          break;
+        default:
+          return;
+      }
+
+      this.currentOperand = computation;
+      this.Operation = undefined;
+      this.previousOperand = "";
+    }
+
+    getDisplayNumber(number) {
+      const stringNumber = number.toString();
+      const integerDigits = parseFloat(stringNumber.split(".")[0]);
+      const decimalDigits = stringNumber.split(".")[1];
+
+      let integerDisplay;
+
+      //   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
+
+      if (isNaN(integerDigits)) {
+        integerDisplay = "";
+      } else {
+        integerDisplay = integerDigits.toLocaleString("en", {
+          maximumFractionDigits: 0,
+        });
+      }
+
+      if (decimalDigits != null) {
+        return `${integerDisplay}.${decimalDigits}`;
+      } else {
+        return integerDisplay;
+      }
+    }
+
+    updateDisplay() {
+      this.currentOperandTextElement.innerText = this.getDisplayNumber(
+        this.currentOperand
+      );
+      //meng update text di tampilan, merujuk ke current operand yg kosong
+
+      if (this.Operation != null) {
+        this.previousOperandTextElement.innerText = `${this.getDisplayNumber(
+          this.previousOperand
+        )} ${this.Operation}`;
+
+        //bahwasanya inner text di div previousOperand merupakan kalimat yg sedang berlangsung
+      } else {
+        this.previousOperandTextElement.innerText = "";
+        //menghapus yg ada di previous setelah mau compute
+      }
+    }
+  }
+
+  // Selector
+  const previousOperandTextElement = document.querySelector(
+    "[data-previous-operand]"
+  );
+  const currentOperandTextElement = document.querySelector(
+    "[data-current-operand]"
+  );
+
+  const numberButton = document.querySelectorAll("[data-number]");
+  const operationButton = document.querySelectorAll("[data-operation]");
+  const equalButton = document.querySelector("[data-equals]");
+  const clearButton = document.querySelector("[data-all-clear]");
+  const deleteButton = document.querySelector("[data-delete]");
+
+  const calculator = new Calculator(
+    previousOperandTextElement,
+    currentOperandTextElement
+  );
+
+  //   numbers - 1,2,3,4,5,6,7,8,9
+  numberButton.forEach((buttons: HTMLElement) => {
+    buttons.addEventListener("click", () => {
+      calculator.appendNumber(buttons.innerText);
+      calculator.updateDisplay();
+    });
+  });
+
+  //   operation sign - +,-, x, :
+  operationButton.forEach((button: HTMLElement) => {
+    button.addEventListener("click", () => {
+      calculator.chooseOperation(button.innerText);
+      calculator.updateDisplay();
+    });
+  });
+
+  equalButton?.addEventListener("click", (button) => {
+    calculator.compute();
+    calculator.updateDisplay();
+  });
+
+  clearButton?.addEventListener("click", (button) => {
+    calculator.clear();
+    calculator.updateDisplay();
+  });
+
+  deleteButton?.addEventListener("click", (button) => {
+    calculator.backspace();
+    calculator.updateDisplay();
+  });
+</script>
