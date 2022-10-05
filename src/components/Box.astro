@@ -11,12 +11,11 @@ const { href, src, alt } = Astro.props;
 <li
   class="shadow-md rounded-2xl border-2 border-slate-300/40 transform transition-all hover:translate-y-2"
 >
-  <a href={href}>
+  <a href={href} target="blank">
     <img
       src={src}
       alt={alt}
-      class="object-cover w-full h-full rounded-md"
-      style={{ aspectRatio: " 16 / 9" }}
+      class="object-cover w-full h-full rounded-md min-h-[200px]"
     />
   </a>
 </li>
